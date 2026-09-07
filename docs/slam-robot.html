@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mobile Robot with 3D SLAM | Xuan-Nghia Huynh</title>
+<meta name="description" content="Architecture, demo, performance, and evidence for the 3D SLAM mobile robot project.">
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="../index.html#top">XUAN-NGHIA HUYNH</a>
+  </div>
+</header>
+
+<main>
+  <section class="section">
+    <div class="wrap">
+      <a class="doc-back" href="../index.html#projects">&larr; Back to Projects</a>
+      <p class="eyebrow">ACADEMIC · AUTONOMIC CONTROL LAB, HCMUT</p>
+      <h1 class="doc-page-title">Mobile Robot with 3D SLAM &amp; Deep Learning</h1>
+      <p class="doc-meta">Undergraduate Thesis Project &middot; 2020 &ndash; 2021 &middot; Ho Chi Minh City, Vietnam</p>
+
+      <div class="doc-section">
+        <h2>Architecture</h2>
+        <p>
+          A three-wheel mobile robot (designed in SolidWorks) running ROS1 on Ubuntu, using RTABMAP
+          for 3D SLAM with an RPLidar and RealSense D435i camera. Localization via AMCL, path
+          planning via Dijkstra's algorithm, and obstacle avoidance via the Dynamic Window approach.
+        </p>
+        <p>
+          A Wi-Fi client-server link integrates a deep-learning-based human-tracking model with the
+          SLAM stack for combined detection and tracking.
+        </p>
+      </div>
+
+      <div class="doc-section">
+        <h2>Demo</h2>
+        <p>[Add a video of the robot mapping and navigating here.]</p>
+      </div>
+
+      <div class="doc-section">
+        <h2>Performance</h2>
+        <p>
+          Validated 2D Hector SLAM mapping and navigation in Gazebo/RViz simulation before
+          deployment on the physical robot, demonstrating practical feasibility of the full
+          localization&ndash;navigation&ndash;tracking pipeline.
+        </p>
+      </div>
+
+      <div class="doc-section">
+        <h2>Evidence</h2>
+        <p>[Add generated maps, navigation logs, or the thesis document.]</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>&copy; 2026 Xuan-Nghia Huynh. Built with HTML, CSS &amp; JS.</p>
+  </div>
+</footer>
+
+</body>
+</html>

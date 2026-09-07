@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YOLOv4-SRm | Xuan-Nghia Huynh</title>
+<meta name="description" content="Architecture, demo, performance, and evidence for the YOLOv4-SRm small object detection project.">
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="../index.html#top">XUAN-NGHIA HUYNH</a>
+  </div>
+</header>
+
+<main>
+  <section class="section">
+    <div class="wrap">
+      <a class="doc-back" href="../index.html#projects">&larr; Back to Projects</a>
+      <p class="eyebrow">ACADEMIC · IVPG LAB, SEJONG UNIVERSITY</p>
+      <h1 class="doc-page-title">YOLOv4-SRm: Super-Resolution for Small Object Detection</h1>
+      <p class="doc-meta">First Author &middot; 2022.03 &ndash; Present &middot; Seoul, South Korea</p>
+
+      <div class="doc-section">
+        <h2>Architecture</h2>
+        <p>
+          A lightweight Super-Resolution module (SRm) inserted into the YOLOv4 backbone, upsampling
+          low-resolution feature maps before detection to recover fine-grained detail for small
+          objects in surveillance and drone imagery.
+        </p>
+        <p>
+          A simplified variant (SSRm) reduces parameter count and FLOPs further, then goes through
+          pruning and INT8 quantization for deployment via the Qualcomm&reg; Neural Processing SDK
+          (SNPE) on a Qualcomm QCS610 SoC.
+        </p>
+      </div>
+
+      <div class="doc-section">
+        <h2>Demo</h2>
+        <p>[Add a demo video or before/after detection comparison here.]</p>
+      </div>
+
+      <div class="doc-section">
+        <h2>Performance</h2>
+        <p>
+          +11.38% AP50 on the company surveillance dataset and +6.29% AP50 on VisDrone2019, compared
+          to vanilla YOLOv4, with fewer parameters.
+        </p>
+        <p>
+          The pruned and quantized SSRm variant runs at 36 FPS on-device, enabling a real-time CCTV
+          detection framework.
+        </p>
+      </div>
+
+      <div class="doc-section">
+        <h2>Evidence</h2>
+        <p>[Add benchmark tables, training logs, or a link to the manuscript once published.]</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>&copy; 2026 Xuan-Nghia Huynh. Built with HTML, CSS &amp; JS.</p>
+  </div>
+</footer>
+
+</body>
+</html>
