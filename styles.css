@@ -664,6 +664,10 @@ h1, h2, h3 { line-height: 1.15; margin: 0; }
 }
 
 /* ---------- Docs modal ---------- */
+.docs-modal[hidden] {
+  display: none;
+}
+
 .docs-modal {
   position: fixed;
   inset: 0;
