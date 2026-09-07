@@ -62,7 +62,11 @@ const docsModalBackdrop = document.getElementById('docs-modal-backdrop');
 const docsModalClose = document.getElementById('docs-modal-close');
 
 function openDocsModal(url) {
-  docsModalFrame.src = url;
+  // Cache-bust: an <iframe> loaded on click follows normal HTTP caching rules,
+  // independent of how the parent page was (hard-)refreshed, so a stale cached
+  // copy of the doc page can stick around after it's been updated.
+  const bustedUrl = url + (url.includes('?') ? '&' : '?') + '_=' + Date.now();
+  docsModalFrame.src = bustedUrl;
   docsModal.hidden = false;
   document.body.style.overflow = 'hidden';
 }
