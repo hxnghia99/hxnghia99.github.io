@@ -21,15 +21,6 @@ To add a real project, duplicate one `<article class="project-card">` block in t
 section and set `data-category` to `academic` or `industry` so the filter buttons pick it up
 correctly.
 
-## Running locally
-
-No build tools needed — just open `index.html` in a browser, or serve the folder locally:
-
-```bash
-python -m http.server 8000
-```
-
-Then visit `http://localhost:8000`.
 
 ## Deploying
 
