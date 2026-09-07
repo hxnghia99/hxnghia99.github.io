@@ -27,37 +27,160 @@
       <div class="doc-section">
         <h2>Architecture</h2>
         <p>
-          A lightweight Super-Resolution module (SRm) inserted into the YOLOv4 backbone, upsampling
-          low-resolution feature maps before detection to recover fine-grained detail for small
-          objects in surveillance and drone imagery.
+          Rather than upscaling the input image (computationally expensive), this work enhances the
+          detector's internal feature maps for small objects directly. Three variants were built on
+          top of YOLOv4:
+        </p>
+        <ul class="doc-list">
+          <li><strong>YOLOv4-FTT</strong> &mdash; a Feature Texture Transfer module that fuses backbone and neck feature maps to enrich small-object detail.</li>
+          <li><strong>YOLOv4-SRm</strong> &mdash; a novel super-resolution module that combines three feature maps at different resolutions into a single enhanced representation.</li>
+          <li><strong>YOLOv4-SSRm</strong> &mdash; a simplified version of SRm with about 50% less computation than FTT at comparable accuracy, making it practical for edge deployment.</li>
+        </ul>
+
+        <figure class="doc-figure">
+          <img src="../assets/figures/yolov4-srm-fig3.png" alt="YOLOv4-SRm network diagram: CSPDarknet-53+SPP backbone feature maps P0-P5 feed an SR module and PANet, adding a super-resolved M3-SR feature map and extra detection head D2 for small objects; below, the SR module's internal structure combining P1, P2, and M3 via residual blocks and pixel shuffle">
+          <figcaption>
+            Full network: the backbone's P1/P2 feature maps and PANet's M3 feature map feed the SR
+            module, which upsamples and fuses them (residual blocks + pixel shuffle) into M3-SR &mdash;
+            a super-resolved feature map that feeds an extra detection head (D2) dedicated to small
+            objects.
+          </figcaption>
+        </figure>
+
+        <figure class="doc-figure">
+          <img src="../assets/figures/yolov4-srm-fig4.png" alt="Simplified SR module (SSRm) diagram: the same P1, P2, M3 inputs processed with fewer residual block stages to reduce computation">
+          <figcaption>
+            The simplified SR module (SSRm) keeps the same P1/P2/M3 inputs and output but removes
+            redundant residual-block stages, cutting compute while keeping accuracy close to full SRm.
+          </figcaption>
+        </figure>
+
+        <p>
+          The SSRm variant was pruned and INT8-quantized, then deployed via the Qualcomm&reg; Neural
+          Processing SDK (SNPE) on a Qualcomm QCS610 SoC for real-time CCTV detection.
         </p>
         <p>
-          A simplified variant (SSRm) reduces parameter count and FLOPs further, then goes through
-          pruning and INT8 quantization for deployment via the Qualcomm&reg; Neural Processing SDK
-          (SNPE) on a Qualcomm QCS610 SoC.
+          Full implementation: <a href="https://github.com/hxnghia99/Yolov4_Learning" target="_blank" rel="noopener">github.com/hxnghia99/Yolov4_Learning</a>
         </p>
       </div>
 
       <div class="doc-section">
         <h2>Demo</h2>
-        <p>[Add a demo video or before/after detection comparison here.]</p>
+        <p>
+          Qualitative detection results across the three variants (FTT, SRm, SSRm) on the self-built
+          surveillance dataset &mdash; vehicles, pedestrians, and cyclists:
+        </p>
+        <figure class="doc-figure">
+          <img src="https://raw.githubusercontent.com/hxnghia99/Yolov4_Learning/master/YOLOv4-for-studying/images/Fig8.png" alt="Detection comparison of YOLOv4-FTT, YOLOv4-SRm, and YOLOv4-SSRm on the self-built surveillance dataset">
+          <figcaption>Surveillance dataset: vehicle, pedestrian, and cyclist detection.</figcaption>
+        </figure>
+        <p>
+          The same comparison on VisDrone2019 aerial/drone imagery, which is denser and has many more
+          small objects (pedestrians, bicycles, cars, vans, trucks, tricycles, buses, motorbikes):
+        </p>
+        <figure class="doc-figure">
+          <img src="https://raw.githubusercontent.com/hxnghia99/Yolov4_Learning/master/YOLOv4-for-studying/images/Fig9.png" alt="Detection comparison of YOLOv4-FTT, YOLOv4-SRm, and YOLOv4-SSRm on VisDrone2019">
+          <figcaption>VisDrone2019 dataset: dense aerial small-object detection.</figcaption>
+        </figure>
       </div>
 
       <div class="doc-section">
         <h2>Performance</h2>
         <p>
-          +11.38% AP50 on the company surveillance dataset and +6.29% AP50 on VisDrone2019, compared
-          to vanilla YOLOv4, with fewer parameters.
+          YOLOv4-SRm reached <strong>79.09% AP50 / 47.42% AP</strong> on the self-built dataset and
+          <strong>24.86% AP50 / 12.28% AP</strong> on VisDrone2019 &mdash; both well above vanilla
+          YOLOv4 (67.71% / 38.62% and 15.98% / 7.23%). SRGAN+YOLOv4 edges out SRm slightly on accuracy
+          but at 572.60 GFLOPs versus SRm's 93.88 GFLOPs on VisDrone2019, making it impractical for
+          edge devices.
         </p>
-        <p>
-          The pruned and quantized SSRm variant runs at 36 FPS on-device, enabling a real-time CCTV
-          detection framework.
-        </p>
+
+        <div class="doc-table-wrap">
+          <table class="doc-table">
+            <caption>Detection performance on the self-built dataset</caption>
+            <thead>
+              <tr><th>Model</th><th>AP50</th><th>AP</th><th>AP50 (Tiny)</th><th>AP (Tiny)</th><th>AP50 (Small)</th><th>AP (Small)</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Vanilla YOLOv4</td><td>67.71</td><td>38.62</td><td>88.59</td><td>52.78</td><td>94.41</td><td>70.05</td></tr>
+              <tr><td>YOLOv8-L</td><td>67.34</td><td>41.84</td><td>88.75</td><td>54.16</td><td>96.88</td><td>76.16</td></tr>
+              <tr><td>SRGAN + YOLOv4</td><td>79.17</td><td>48.05</td><td>93.35</td><td>61.71</td><td>96.56</td><td>75.53</td></tr>
+              <tr><td>YOLOv4-HR</td><td>72.66</td><td>41.52</td><td>89.08</td><td>55.16</td><td>92.96</td><td>68.26</td></tr>
+              <tr><td>YOLOv4-FTT</td><td>77.31</td><td>44.15</td><td>92.37</td><td>57.28</td><td>93.78</td><td>71.37</td></tr>
+              <tr class="doc-table-highlight"><td>YOLOv4-SRm</td><td>79.09</td><td>47.42</td><td>92.14</td><td>60.20</td><td>95.46</td><td>72.06</td></tr>
+              <tr><td>YOLOv4-SSRm</td><td>77.20</td><td>44.03</td><td>91.84</td><td>56.43</td><td>96.60</td><td>71.69</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="doc-table-wrap">
+          <table class="doc-table">
+            <caption>Detection performance on VisDrone2019</caption>
+            <thead>
+              <tr><th>Model</th><th>AP50</th><th>AP</th><th>AP50 (Tiny)</th><th>AP (Tiny)</th><th>AP50 (Small)</th><th>AP (Small)</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Vanilla YOLOv4</td><td>15.98</td><td>7.23</td><td>17.77</td><td>6.56</td><td>34.46</td><td>15.15</td></tr>
+              <tr><td>YOLOv8-L</td><td>19.08</td><td>9.59</td><td>22.22</td><td>10.01</td><td>42.11</td><td>20.51</td></tr>
+              <tr><td>SRGAN + YOLOv4</td><td>26.79</td><td>13.28</td><td>32.88</td><td>14.68</td><td>48.48</td><td>25.56</td></tr>
+              <tr><td>YOLOv4-HR</td><td>21.02</td><td>9.66</td><td>25.20</td><td>9.80</td><td>40.52</td><td>19.38</td></tr>
+              <tr><td>YOLOv4-FTT</td><td>22.78</td><td>11.02</td><td>29.19</td><td>12.15</td><td>43.06</td><td>21.64</td></tr>
+              <tr class="doc-table-highlight"><td>YOLOv4-SRm</td><td>24.86</td><td>12.28</td><td>30.65</td><td>13.46</td><td>43.53</td><td>23.15</td></tr>
+              <tr><td>YOLOv4-SSRm</td><td>22.27</td><td>10.98</td><td>27.31</td><td>11.57</td><td>39.66</td><td>21.13</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="doc-table-wrap">
+          <table class="doc-table">
+            <caption>Model size, compute, and desktop inference (Params in M, Weight in MB, FLOPs in G)</caption>
+            <thead>
+              <tr><th>Model</th><th>Params</th><th>Weight</th><th>FLOPs (Self-Built)</th><th>FPS (Self-Built)</th><th>FLOPs (VisDrone)</th><th>FPS (VisDrone)</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Vanilla YOLOv4</td><td>64.4</td><td>244</td><td>9.99</td><td>114</td><td>48.16</td><td>96</td></tr>
+              <tr><td>YOLOv8-L</td><td>43.6</td><td>165</td><td>11.56</td><td>106</td><td>55.78</td><td>99</td></tr>
+              <tr><td>SRGAN + YOLOv4</td><td>65.8</td><td>249</td><td>118.76</td><td>79</td><td>572.60</td><td>59</td></tr>
+              <tr><td>YOLOv4-HR</td><td>48.3</td><td>183</td><td>10.75</td><td>112</td><td>51.82</td><td>92</td></tr>
+              <tr><td>YOLOv4-FTT</td><td>55.0</td><td>208</td><td>20.29</td><td>109</td><td>97.83</td><td>90</td></tr>
+              <tr class="doc-table-highlight"><td>YOLOv4-SRm</td><td>49.3</td><td>187</td><td>19.47</td><td>110</td><td>93.88</td><td>91</td></tr>
+              <tr><td>YOLOv4-SSRm</td><td>45.1</td><td>171</td><td>10.22</td><td>115</td><td>49.25</td><td>94</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="doc-table-wrap">
+          <table class="doc-table">
+            <caption>Embedded inference on the self-built dataset (Qualcomm-class device)</caption>
+            <thead>
+              <tr><th>Model</th><th>Inference Time (ms)</th><th>FPS</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Vanilla YOLOv4</td><td>31.17</td><td>32</td></tr>
+              <tr><td>YOLOv8-L</td><td>29.90</td><td>33</td></tr>
+              <tr><td>YOLOv4-HR</td><td>29.40</td><td>34</td></tr>
+              <tr><td>YOLOv4-FTT</td><td>40.02</td><td>25</td></tr>
+              <tr><td>YOLOv4-SRm</td><td>40.79</td><td>25</td></tr>
+              <tr class="doc-table-highlight"><td>YOLOv4-SSRm</td><td>27.51</td><td>36</td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <div class="doc-section">
         <h2>Evidence</h2>
-        <p>[Add benchmark tables, training logs, or a link to the manuscript once published.]</p>
+        <p>
+          Source code, training/inference scripts, and the dataset/figure assets referenced above are
+          in the project repository, organized by learning stage:
+        </p>
+        <ul class="doc-list">
+          <li><a href="https://github.com/hxnghia99/Yolov4_Learning" target="_blank" rel="noopener">hxnghia99/Yolov4_Learning</a> &mdash; full repository</li>
+          <li><code>YOLOv4-for-studying/</code> &mdash; SR module implementations, training (<code>YOLOv4_train.py</code>, <code>YOLOv4_Fmap_train.py</code>), model definitions (<code>YOLOv4_model.py</code>, <code>YOLOv4_SR_network.py</code>), and evaluation (<code>YOLOv4_mAP.py</code>)</li>
+          <li><code>YOLO-v1-for-studying/</code> and <code>YOLOv3-for-studying/</code> &mdash; earlier YOLO versions studied while building up to this work</li>
+        </ul>
+        <p>
+          Published as: X.N. Huynh, G.B. Jung, and J.K. Suhr, &ldquo;One-Stage Small Object Detection
+          Using Super-Resolved Feature Map for Edge Devices,&rdquo; <em>MDPI Electronics</em>, 2024.
+        </p>
       </div>
     </div>
   </section>
