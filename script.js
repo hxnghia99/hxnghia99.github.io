@@ -54,3 +54,39 @@ if (filterBar) {
     });
   });
 }
+
+// Docs modal: open project docs inline instead of navigating away
+const docsModal = document.getElementById('docs-modal');
+const docsModalFrame = document.getElementById('docs-modal-frame');
+const docsModalBackdrop = document.getElementById('docs-modal-backdrop');
+const docsModalClose = document.getElementById('docs-modal-close');
+
+function openDocsModal(url) {
+  docsModalFrame.src = url;
+  docsModal.hidden = false;
+  document.body.style.overflow = 'hidden';
+}
+
+function closeDocsModal() {
+  docsModal.hidden = true;
+  docsModalFrame.src = '';
+  document.body.style.overflow = '';
+}
+
+document.querySelectorAll('.docs-link').forEach((link) => {
+  link.addEventListener('click', (event) => {
+    event.preventDefault();
+    openDocsModal(link.getAttribute('href'));
+  });
+});
+
+docsModalBackdrop.addEventListener('click', closeDocsModal);
+docsModalClose.addEventListener('click', closeDocsModal);
+
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape' && !docsModal.hidden) closeDocsModal();
+});
+
+window.addEventListener('message', (event) => {
+  if (event.data === 'close-docs-modal') closeDocsModal();
+});

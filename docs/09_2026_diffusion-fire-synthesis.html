@@ -62,5 +62,18 @@
   </div>
 </footer>
 
+<script>
+  if (window.parent !== window) {
+    var backLink = document.querySelector('.doc-back');
+    if (backLink) {
+      backLink.textContent = '← Close';
+      backLink.addEventListener('click', function (e) {
+        e.preventDefault();
+        window.parent.postMessage('close-docs-modal', '*');
+      });
+    }
+  }
+</script>
+
 </body>
 </html>
