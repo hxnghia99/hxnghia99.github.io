@@ -27,30 +27,104 @@
       <div class="doc-section">
         <h2>Architecture</h2>
         <p>
-          A layout-conditioned diffusion model using a layout-aware cross-attention mechanism to
-          steer generation from semantic layouts. Extended to synchronized cross-spectral synthesis
-          by combining RGB and Near-Infrared (NIR) channels with background conditioning, producing
-          paired RGB/NIR outputs from a single reverse diffusion process.
+          Given a real background photo, a layout (bounding boxes labeled &ldquo;fire&rdquo; /
+          &ldquo;smoke&rdquo;), and a binary mask of that layout region, the model diffuses noise
+          into the masked region only. At every reverse step, the denoised patch is blended back
+          into the untouched original image outside the mask
+          (x<sub>t-1</sub> = UNet(m&middot;x<sub>t</sub> + (1&minus;m)&middot;x<sub>0</sub>)), so the
+          rest of the scene stays pixel-identical to the real photo &mdash; only the specified region
+          is synthesized.
+        </p>
+
+        <figure class="doc-figure">
+          <img src="../assets/figures/diffusion-rgb-process.png" alt="RGB diffusion process: a real image, its fire/smoke layout, and a binary mask feed a forward process to noise x_T, then a reverse process denoises through a UNet conditioned on the mask, blending with the original image at each step to produce the final fire image">
+          <figcaption>RGB pipeline: forward-noise the masked region, then reverse-denoise it back while continuously blending with the untouched background via the mask m.</figcaption>
+        </figure>
+
+        <p>
+          Layout conditioning happens inside an Image-Layout Fusion Module at each UNet resolution:
+          the layout (bounding box, class label) is embedded into a layout vector, which steers the
+          feature map through two parallel paths &mdash; global attention (broadcasting the
+          layout embedding across the whole feature map) and local self-attention (a QKV attention
+          restricted to the region and class) &mdash; summed into a layout-aware feature map that
+          feeds the next UNet stage.
+        </p>
+
+        <figure class="doc-figure">
+          <img src="../assets/figures/diffusion-rgb-unet-detail.png" alt="UNet with skip connections and an Image-Layout Fusion Module: the layout is embedded into a layout vector, bounding box, and class label, which drive global attention and local self-attention branches that are summed into a refined feature map feeding the UNet">
+          <figcaption>Image-Layout Fusion Module: layout embedding drives global + local attention branches, fused into the feature map at each UNet stage.</figcaption>
+        </figure>
+
+        <p>
+          <strong>Extending to RGB + NIR:</strong> to keep a visible-light (RGB) and thermal/near-infrared
+          (NIR) rendering of the same fire physically consistent, both channels are diffused jointly
+          &mdash; their noisy latents are concatenated (xy<sub>t</sub>) and denoised together by one
+          shared UNet (with the same Image-Layout Fusion Module), so a single reverse process produces
+          matching flame geometry in both modalities from one layout.
+        </p>
+
+        <figure class="doc-figure">
+          <img src="../assets/figures/diffusion-rgbnir-process.png" alt="Joint RGB+NIR diffusion process: an RGB image x0 and NIR image y0 are each forward-noised to xT and yT, concatenated as xyT, denoised jointly by a shared UNet, and split back into RGB output x0-hat and NIR output y0-hat">
+          <figcaption>RGB+NIR pipeline: both modalities are forward-noised independently, concatenated, and denoised jointly so the two outputs stay physically consistent.</figcaption>
+        </figure>
+
+        <figure class="doc-figure">
+          <img src="../assets/figures/diffusion-rgbnir-unet-detail.png" alt="Joint UNet architecture for the concatenated RGB+NIR latent, using the same Image-Layout Fusion Module with global and local attention branches">
+          <figcaption>The same Image-Layout Fusion Module design applied to the joint RGB+NIR UNet.</figcaption>
+        </figure>
+
+        <p>
+          Full implementation: <a href="https://github.com/hxnghia99/Fire_Diffusion" target="_blank" rel="noopener">github.com/hxnghia99/Fire_Diffusion</a>
         </p>
       </div>
 
       <div class="doc-section">
         <h2>Demo</h2>
-        <p>[Add generated RGB/NIR sample pairs here.]</p>
+        <p>
+          RGB-only generation across varied real backgrounds &mdash; construction site, historic
+          building, kitchen, road tunnel, city street, and river bridge:
+        </p>
+        <figure class="doc-figure">
+          <img src="../assets/figures/diffusion-rgb-demo.png" alt="Six examples of RGB fire/smoke generation: background, layout, and generated fire image triplets across a construction site, statue, kitchen, tunnel, street, and bridge">
+          <figcaption>Background / layout / generated-fire triplets across six real scenes.</figcaption>
+        </figure>
+        <p>
+          Joint RGB+NIR generation &mdash; each example shows the background, layout, and the
+          resulting NIR/thermal fire signature at the same location:
+        </p>
+        <figure class="doc-figure">
+          <img src="../assets/figures/diffusion-rgbnir-demo.png" alt="Four examples of joint RGB+NIR generation, each showing the RGB background, layout, and the generated NIR/thermal fire output">
+          <figcaption>RGB background / layout / generated NIR fire signature, across four scenes.</figcaption>
+        </figure>
       </div>
 
       <div class="doc-section">
         <h2>Performance</h2>
         <p>
-          Successfully generates two-class (fire &amp; smoke) imagery from non-fire backgrounds.
-          A cross-attention conditioning mechanism automatically refines segmentation masks during
-          the reverse process, reducing manual annotation effort.
+          This is ongoing dissertation work, so results so far are qualitative rather than a
+          published benchmark. The model consistently localizes fire/smoke to the specified layout
+          region while leaving every pixel outside the mask identical to the original photo &mdash;
+          a guarantee that full-image generative baselines (which regenerate the whole frame) can't
+          give. The RGB+NIR extension is, to date, the only variant in this line of work producing a
+          synchronized thermal channel for the same generated event, which is what makes it useful for
+          training multi-spectral fire detectors. Quantitative evaluation (FID, and downstream
+          detection/segmentation gains, mirroring the GAN-based project's evaluation) is in progress.
         </p>
       </div>
 
       <div class="doc-section">
         <h2>Evidence</h2>
-        <p>[Add quantitative results and comparisons once evaluation is complete.]</p>
+        <p>
+          Code and configs are in the project repository:
+        </p>
+        <ul class="doc-list">
+          <li><a href="https://github.com/hxnghia99/Fire_Diffusion" target="_blank" rel="noopener">hxnghia99/Fire_Diffusion</a> &mdash; full repository (<code>layout_diffusion/</code>, <code>configs/</code>, <code>scripts/</code>, <code>train.py</code>, <code>test.py</code>)</li>
+        </ul>
+        <p>
+          This work is the subject of the ongoing PhD dissertation, &ldquo;Generative Frameworks for
+          Layout-Conditioned RGB and Multi-Spectral Fire Image Synthesis to Enhance Detection and
+          Segmentation Tasks&rdquo; (see Education section).
+        </p>
       </div>
     </div>
   </section>
@@ -58,7 +132,7 @@
 
 <footer class="site-footer">
   <div class="wrap">
-    <p>&copy; Xuan-Nghia Huynh · Project · Updated September 2026.</p>
+    <p>&copy; Xuan-Nghia Huynh &middot; Project &middot; Updated September 2026.</p>
   </div>
 </footer>
 
