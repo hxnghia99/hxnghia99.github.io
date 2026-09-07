@@ -22,30 +22,73 @@
       <a class="doc-back" href="../index.html#projects">&larr; Back to Projects</a>
       <p class="eyebrow">INDUSTRY · ROBERT BOSCH ENGINEERING AND BUSINESS SOLUTIONS VN</p>
       <h1 class="doc-page-title">AUTOSAR Communication Layer &amp; CAN Protocol</h1>
-      <p class="doc-meta">Embedded Software Engineer Intern &middot; 2020.06 &ndash; 2020.12 &middot; Ho Chi Minh City, Vietnam</p>
+      <p class="doc-meta">Embedded Software Engineer Intern &middot; 2020.06 &ndash; 2020.09 &middot; Ho Chi Minh City, Vietnam</p>
 
       <div class="doc-section">
         <h2>Architecture</h2>
         <p>
-          Studied the AUTOSAR software architecture's communication application layer and the CAN
-          protocol as used in automotive embedded systems, as part of the RADAR team's embedded
-          software stack.
+          A three-month graduation internship on the RADAR team, working inside AUTOSAR's layered
+          software architecture: the Application Layer (software components, or SWCs) talks only
+          through the Runtime Environment (RTE), which routes calls to the Basic Software beneath it
+          &mdash; the Communication Stack (ComStack), Microcontroller Abstraction Layer, and other
+          services. The assignment sat at the RTE / ComStack boundary, on the receive side of CAN
+          communication.
+        </p>
+        <p>The work split into two parts:</p>
+        <ul class="doc-list">
+          <li>
+            <strong>RTE configuration</strong> &mdash; creating a port interface, creating a port and
+            connecting it to a runnable (the unit of executable code inside a software component),
+            and wiring a connection between two ports so two components can exchange data through
+            the RTE rather than calling each other directly.
+          </li>
+          <li>
+            <strong>ComStack implementation for RX messages</strong> &mdash; given a project's CAN
+            Matrix, the corresponding <code>.dbc</code> file, and an ICT (interface control table),
+            configuring the basic software of the ComStack for incoming CAN messages, then
+            implementing the receiving logic inside a &ldquo;Net&rdquo; component.
+          </li>
+        </ul>
+        <p>
+          On top of that, I self-designed and implemented fault monitoring for every RX message:
+          a <strong>DLC check</strong> (the received frame's data length matches what the CAN Matrix
+          specifies), a <strong>timeout check</strong> (the message keeps arriving within its
+          expected cycle time), a <strong>checksum check</strong>, and an <strong>alive-counter
+          check</strong> (a rolling counter in the payload increments as expected) &mdash; the
+          standard set of safeguards AUTOSAR's E2E (end-to-end) protection uses to catch a corrupted,
+          stale, or dropped CAN frame before it reaches the application logic.
         </p>
       </div>
 
       <div class="doc-section">
         <h2>Demo</h2>
-        <p>[Internal research task — no public demo available.]</p>
+        <p>
+          No public demo &mdash; this was proprietary in-vehicle software built inside Bosch's
+          internal AUTOSAR tooling and codebase, on the RADAR team's project.
+        </p>
       </div>
 
       <div class="doc-section">
         <h2>Performance</h2>
-        <p>[No external benchmark applies — this was a research and study assignment rather than a shipped system.]</p>
+        <p>
+          No external benchmark applies to configuration/code-generation work like this. The concrete
+          deliverable was: RTE interfaces, ports, and inter-component connections configured and
+          working per the assigned component design; and a complete RX fault-monitoring
+          implementation (DLC, timeout, checksum, alive counter) that I wrote and self-tested against
+          the CAN Matrix / DBC specification before handoff.
+        </p>
       </div>
 
       <div class="doc-section">
         <h2>Evidence</h2>
-        <p>[Add internal documentation or training materials here, if shareable.]</p>
+        <p>
+          The codebase and internal documentation are Bosch-proprietary and not shareable. Publicly
+          referenceable context for this work:
+        </p>
+        <ul class="doc-list">
+          <li>AUTOSAR (AUTomotive Open System ARchitecture) &mdash; the industry-standard software architecture this internship's tooling and workflow were built around.</li>
+          <li>The CAN (Controller Area Network) protocol, and its description via a CAN Matrix / <code>.dbc</code> file &mdash; the specification format the RX fault-monitoring logic was implemented against.</li>
+        </ul>
       </div>
     </div>
   </section>
@@ -53,7 +96,7 @@
 
 <footer class="site-footer">
   <div class="wrap">
-    <p>&copy; Xuan-Nghia Huynh · Project · Updated September 2021.</p>
+    <p>&copy; Xuan-Nghia Huynh &middot; Project &middot; Updated September 2020.</p>
   </div>
 </footer>
 
