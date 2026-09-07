@@ -133,14 +133,29 @@ h1, h2, h3 { line-height: 1.15; margin: 0; }
   margin: 0 0 18px;
 }
 
-.hero-photo {
-  flex: 0 0 auto;
+.hero-flex {
+  display: flex;
+  align-items: flex-start;
+  gap: 56px;
+}
+
+.hero-text {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.hero-side {
+  flex: 0 0 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  padding-top: 4px;
 }
 
 .hero-photo img {
   display: block;
-  width: 120px;
-  height: 120px;
+  width: 140px;
+  height: 140px;
   object-fit: cover;
   border-radius: 50%;
   border: 4px solid var(--bg-panel);
@@ -197,21 +212,13 @@ h1, h2, h3 { line-height: 1.15; margin: 0; }
 
 .btn-ghost:hover { border-color: var(--accent); color: var(--accent-strong); }
 
-.hero-meta {
-  margin: 40px 0 0;
-  padding-top: 32px;
-  border-top: 1px solid var(--line);
+.info-list {
   display: flex;
-  align-items: flex-start;
-  gap: 32px;
-}
-
-.info-grid {
-  flex: 1 1 auto;
-  min-width: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 24px;
+  flex-direction: column;
+  gap: 18px;
+  margin: 0;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
 }
 
 .info-item dt {
@@ -658,12 +665,13 @@ h1, h2, h3 { line-height: 1.15; margin: 0; }
 
 /* ---------- Responsive ---------- */
 @media (max-width: 860px) {
-  .info-grid { grid-template-columns: repeat(2, 1fr); }
+  .hero-flex { flex-direction: column; }
+  .hero-side { flex-direction: row; align-items: flex-start; flex: 1 1 auto; width: 100%; }
+  .info-list { flex: 1 1 auto; flex-direction: row; flex-wrap: wrap; border-top: 0; padding-top: 0; gap: 20px 32px; }
+  .info-item { flex: 1 1 140px; }
 }
 
 @media (max-width: 720px) {
-  .hero-meta { flex-direction: column; align-items: stretch; }
-
   .main-nav {
     position: absolute;
     top: 64px;
@@ -688,6 +696,7 @@ h1, h2, h3 { line-height: 1.15; margin: 0; }
 }
 
 @media (max-width: 520px) {
-  .info-grid { grid-template-columns: 1fr 1fr; }
+  .hero-side { flex-direction: column; }
+  .info-list { flex-direction: column; }
   .hero h1 { max-width: 100%; }
 }
