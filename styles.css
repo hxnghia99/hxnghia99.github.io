@@ -297,6 +297,7 @@ h1, h2, h3 { line-height: 1.15; margin: 0; }
   display: flex;
   flex-direction: column;
   gap: 10px;
+  scroll-margin-top: 84px;
 }
 
 .project-meta {
@@ -432,6 +433,24 @@ h1, h2, h3 { line-height: 1.15; margin: 0; }
   display: flex;
   flex-direction: column;
   gap: 6px;
+}
+
+.timeline-projects {
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.timeline-projects a {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--accent-strong);
+  width: fit-content;
+}
+
+.timeline-projects a:hover {
+  text-decoration: underline;
 }
 
 /* ---------- Education ---------- */
