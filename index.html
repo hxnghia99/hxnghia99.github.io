@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Xuan-Nghia Huynh | AI Research Engineer</title>
-<meta name="description" content="Portfolio of Xuan-Nghia Huynh — AI Research Engineer.">
+<title>Xuan-Nghia Huynh | PhD Candidate · Computer Vision &amp; Generative AI</title>
+<meta name="description" content="Portfolio of Xuan-Nghia Huynh — PhD Candidate researching computer vision and generative AI at Sejong University.">
 <link rel="icon" href="data:,">
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -17,6 +17,7 @@
       <a href="#projects">Projects</a>
       <a href="#experience">Experience</a>
       <a href="#education">Education</a>
+      <a href="#publications">Publications</a>
       <a href="#skills">Skills</a>
       <a href="#contact">Contact</a>
     </nav>
@@ -32,20 +33,26 @@
   <section class="hero">
     <div class="hero-blob" aria-hidden="true"></div>
     <div class="wrap hero-inner">
-      <p class="eyebrow">AI RESEARCH ENGINEER · SOFTWARE ENGINEER</p>
-      <h1>I build AI systems that hold up outside the notebook.</h1>
-      <!-- TODO: replace with 2-3 sentences about your background, focus area, and what you're currently working on -->
-      <p class="hero-lede">
-        [Add a short introduction here — e.g. your current role, what you're studying or working on,
-        and the kind of problems you like to solve. Two to three sentences is plenty.]
-      </p>
-      <div class="hero-actions">
-        <a class="btn btn-primary" href="mailto:hxnghia99k@gmail.com">Email Me</a>
-        <!-- TODO: link your real CV file, e.g. assets/cv.pdf -->
-        <a class="btn btn-ghost" href="#" target="_blank" rel="noopener">Curriculum Vitae (CV)</a>
-        <a class="btn btn-ghost" href="https://github.com/hxnghia99" target="_blank" rel="noopener">GitHub</a>
-        <!-- TODO: replace with your LinkedIn URL -->
-        <a class="btn btn-ghost" href="#" target="_blank" rel="noopener">LinkedIn</a>
+      <div class="hero-flex">
+        <div class="hero-text">
+          <p class="eyebrow">PHD CANDIDATE · COMPUTER VISION · GENERATIVE AI</p>
+          <h1>I build vision models that detect, and generative models that create the data to train them.</h1>
+          <p class="hero-lede">
+            PhD candidate in AI &amp; Robotics at Sejong University, researching object detection for
+            embedded systems and generative frameworks for layout-conditioned RGB and multi-spectral
+            image synthesis at the IVPG Lab. Earlier work spans 3D SLAM robotics and embedded automotive
+            software at Robert Bosch.
+          </p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="mailto:hxnghia99k@gmail.com">Email Me</a>
+            <a class="btn btn-ghost" href="assets/MyCV.pdf" target="_blank" rel="noopener">Curriculum Vitae (CV)</a>
+            <a class="btn btn-ghost" href="https://github.com/hxnghia99" target="_blank" rel="noopener">GitHub</a>
+            <a class="btn btn-ghost" href="https://www.linkedin.com/in/x-nghia-huynh/" target="_blank" rel="noopener">LinkedIn</a>
+          </div>
+        </div>
+        <div class="hero-photo">
+          <img src="assets/MyPhoto.jpg" alt="Portrait of Xuan-Nghia Huynh">
+        </div>
       </div>
     </div>
 
@@ -53,28 +60,23 @@
       <dl class="info-grid">
         <div class="info-item">
           <dt>LOCATION:</dt>
-          <!-- TODO -->
-          <dd>[City, Country]</dd>
+          <dd>Seoul, South Korea</dd>
         </div>
         <div class="info-item">
           <dt>CURRENT ROLE:</dt>
-          <!-- TODO -->
-          <dd>[Your current role / program]</dd>
+          <dd>PhD Candidate &amp; Researcher, IVPG Lab, Sejong University</dd>
         </div>
         <div class="info-item">
           <dt>FOCUS AREAS:</dt>
-          <!-- TODO -->
-          <dd>[e.g. Applied ML, Computer Vision, MLOps]</dd>
+          <dd>Object Detection · GANs · Diffusion Models</dd>
         </div>
         <div class="info-item">
           <dt>AVAILABILITY:</dt>
-          <!-- TODO -->
-          <dd>[e.g. Open to full-time roles from ...]</dd>
+          <dd>Open to internships now · full-time roles from 2027</dd>
         </div>
         <div class="info-item">
           <dt>LANGUAGES:</dt>
-          <!-- TODO -->
-          <dd>[e.g. Vietnamese (Native) · English (Advanced)]</dd>
+          <dd>Vietnamese (Native) · English (Fluent) · Korean (Basic)</dd>
         </div>
       </dl>
     </div>
@@ -89,67 +91,120 @@
         <button class="filter-chip is-active" data-filter="all">All</button>
         <button class="filter-chip" data-filter="academic">Academic</button>
         <button class="filter-chip" data-filter="industry">Industry</button>
-        <button class="filter-chip" data-filter="personal">Personal</button>
       </div>
 
       <div class="project-list" id="project-list">
 
-        <!-- TODO: duplicate this article block for each real project. Set data-category to academic / industry / personal -->
-        <article class="project-card" data-category="personal">
+        <article class="project-card" data-category="academic">
           <div class="project-meta">
-            <span class="tag-pill">Personal project</span>
-            <span class="project-date">[YYYY.MM]</span>
+            <span class="tag-pill">Academic</span>
+            <span class="project-date">2022.03 &ndash; Present</span>
           </div>
-          <h3>[Project Name]</h3>
-          <p class="project-org">[Organization / lab / "Side project"]</p>
-          <p class="project-desc">[One or two sentences describing what the project does and why it matters.]</p>
-          <p class="project-stat">[Headline stat or result, e.g. "40% faster inference"]</p>
+          <h3>YOLOv4-SRm: Super-Resolution for Small Object Detection</h3>
+          <p class="project-org">IVPG Lab, Sejong University</p>
+          <p class="project-desc">
+            A lightweight super-resolution module for YOLOv4 that boosts small-object detection in
+            surveillance and drone imagery while cutting compute cost. A pruned, quantized variant
+            (SSRm) was embedded on a Qualcomm QCS610 SoC for a real-time CCTV detection framework.
+          </p>
+          <p class="project-stat">+11.38% AP50 (company data) · +6.29% AP50 (VisDrone2019) · 36 FPS on-device</p>
           <div class="tag-row">
-            <span class="tag">[tag]</span>
-            <span class="tag">[tag]</span>
-            <span class="tag">[tag]</span>
+            <span class="tag">Object Detection</span>
+            <span class="tag">YOLOv4</span>
+            <span class="tag">Model Compression</span>
+            <span class="tag">Embedded AI</span>
           </div>
           <div class="project-links">
-            <a href="#" target="_blank" rel="noopener">GitHub</a>
-            <a href="#" target="_blank" rel="noopener">Docs</a>
+            <a href="https://github.com/hxnghia99" target="_blank" rel="noopener">GitHub</a>
           </div>
         </article>
 
         <article class="project-card" data-category="academic">
           <div class="project-meta">
             <span class="tag-pill">Academic</span>
-            <span class="project-date">[YYYY.MM]</span>
+            <span class="project-date">2023 &ndash; 2024</span>
           </div>
-          <h3>[Research Project Title]</h3>
-          <p class="project-org">[Lab / University]</p>
-          <p class="project-desc">[Short description of the research problem and your approach.]</p>
-          <p class="project-stat">[Role, e.g. "First Author · Under Review at ..."]</p>
+          <h3>GAN-based Layout-Guided Fire Image &amp; Mask Generation</h3>
+          <p class="project-org">IVPG Lab, Sejong University</p>
+          <p class="project-desc">
+            An end-to-end layout-conditioned GAN pipeline combining image-to-image and layout-to-image
+            translation to generate photorealistic fire images together with COCO-format bounding boxes
+            and segmentation masks — with no manual annotation effort.
+          </p>
+          <p class="project-stat">FID &minus;4.79 vs. PaintByExample · +4.6% mAP · +4.44% mIoU</p>
           <div class="tag-row">
-            <span class="tag">[tag]</span>
-            <span class="tag">[tag]</span>
+            <span class="tag">GANs</span>
+            <span class="tag">Data Augmentation</span>
+            <span class="tag">Segmentation</span>
           </div>
           <div class="project-links">
-            <a href="#" target="_blank" rel="noopener">GitHub</a>
-            <a href="#" target="_blank" rel="noopener">Docs</a>
+            <a href="https://github.com/hxnghia99" target="_blank" rel="noopener">GitHub</a>
+          </div>
+        </article>
+
+        <article class="project-card" data-category="academic">
+          <div class="project-meta">
+            <span class="tag-pill">Academic</span>
+            <span class="project-date">2024 &ndash; Present</span>
+          </div>
+          <h3>Diffusion-based Multi-Spectral Fire Synthesis</h3>
+          <p class="project-org">IVPG Lab, Sejong University</p>
+          <p class="project-desc">
+            A layout-conditioned diffusion model using a layout-aware cross-attention mechanism to
+            synthesize fire &amp; smoke imagery, extended to synchronized cross-spectral (RGB + NIR)
+            generation with automatic segmentation-mask refinement during the reverse process.
+          </p>
+          <p class="project-stat">First Author · Ongoing dissertation work</p>
+          <div class="tag-row">
+            <span class="tag">Diffusion Models</span>
+            <span class="tag">Cross-Attention</span>
+            <span class="tag">Multi-Spectral Imaging</span>
+          </div>
+          <div class="project-links">
+            <a href="https://github.com/hxnghia99" target="_blank" rel="noopener">GitHub</a>
+          </div>
+        </article>
+
+        <article class="project-card" data-category="academic">
+          <div class="project-meta">
+            <span class="tag-pill">Academic</span>
+            <span class="project-date">2020 &ndash; 2021</span>
+          </div>
+          <h3>Mobile Robot with 3D SLAM &amp; Deep Learning</h3>
+          <p class="project-org">Autonomic Control Lab, HCMUT</p>
+          <p class="project-desc">
+            Designed and built a three-wheel mobile robot running RTABMAP 3D SLAM on ROS1 with RPLidar
+            and RealSense D435i, with AMCL localization, Dijkstra path planning, and Dynamic Window
+            obstacle avoidance — integrated with deep-learning-based human tracking over Wi-Fi.
+          </p>
+          <p class="project-stat">Undergraduate thesis project</p>
+          <div class="tag-row">
+            <span class="tag">ROS</span>
+            <span class="tag">3D SLAM</span>
+            <span class="tag">Robotics</span>
+          </div>
+          <div class="project-links">
+            <a href="https://github.com/hxnghia99" target="_blank" rel="noopener">GitHub</a>
           </div>
         </article>
 
         <article class="project-card" data-category="industry">
           <div class="project-meta">
             <span class="tag-pill">Industry</span>
-            <span class="project-date">[YYYY.MM]</span>
+            <span class="project-date">2020.06 &ndash; 2020.12</span>
           </div>
-          <h3>[Project Name]</h3>
-          <p class="project-org">[Company]</p>
-          <p class="project-desc">[What you built, for whom, and the impact it had.]</p>
-          <p class="project-stat">[Headline metric]</p>
+          <h3>AUTOSAR Communication Layer &amp; CAN Protocol</h3>
+          <p class="project-org">Robert Bosch Engineering and Business Solutions VN</p>
+          <p class="project-desc">
+            Worked on the RADAR team as an embedded software engineering intern, researching AUTOSAR
+            architecture in the communication application layer and the CAN protocol used in
+            automotive embedded systems.
+          </p>
+          <p class="project-stat">Embedded Software Engineer Intern</p>
           <div class="tag-row">
-            <span class="tag">[tag]</span>
-            <span class="tag">[tag]</span>
-          </div>
-          <div class="project-links">
-            <a href="#" target="_blank" rel="noopener">GitHub</a>
-            <a href="#" target="_blank" rel="noopener">Docs</a>
+            <span class="tag">AUTOSAR</span>
+            <span class="tag">CAN Protocol</span>
+            <span class="tag">Embedded Systems</span>
           </div>
         </article>
 
@@ -163,29 +218,44 @@
       <h2 class="section-title">Experience</h2>
 
       <div class="timeline">
-        <!-- TODO: duplicate this block for each role, most recent first -->
         <div class="timeline-item">
-          <div class="timeline-date">[YYYY.MM] &ndash; Present</div>
+          <div class="timeline-date">2022.03 &ndash; Present</div>
           <div class="timeline-body">
-            <h3>[Job Title]</h3>
-            <p class="timeline-org">[Company / Lab] &middot; [City, Country]</p>
-            <p class="timeline-summary">[One-line summary of the role and its focus.]</p>
+            <h3>PhD Researcher</h3>
+            <p class="timeline-org">IVPG Laboratory, Sejong University &middot; Seoul, South Korea</p>
+            <p class="timeline-summary">First-author research on lightweight object detection and generative data synthesis for fire-detection systems.</p>
             <ul class="timeline-list">
-              <li>[Key responsibility or achievement, ideally with a number.]</li>
-              <li>[Another achievement.]</li>
+              <li>Designed a lightweight super-resolution module for YOLOv4 (SRm), improving AP50 by 11.38% and 6.29% on company and VisDrone2019 datasets while reducing parameters versus vanilla YOLOv4.</li>
+              <li>Pruned and quantized a simplified variant (SSRm) and deployed it on a Qualcomm QCS610 SoC, reaching 36 FPS for a real-time CCTV detection framework.</li>
+              <li>Built a layout-conditioned GAN pipeline generating photorealistic fire images with automatic COCO annotations, lowering FID by 4.79 and improving downstream detection (+4.6% mAP) and segmentation (+4.44% mIoU).</li>
+              <li>Developing diffusion-based layout-conditioned models for synchronized RGB/NIR multi-spectral fire synthesis with automatic mask refinement (ongoing dissertation work).</li>
             </ul>
           </div>
         </div>
 
         <div class="timeline-item">
-          <div class="timeline-date">[YYYY.MM] &ndash; [YYYY.MM]</div>
+          <div class="timeline-date">2020.01 &ndash; 2021.08</div>
           <div class="timeline-body">
-            <h3>[Job Title]</h3>
-            <p class="timeline-org">[Company] &middot; [City, Country]</p>
-            <p class="timeline-summary">[One-line summary of the role.]</p>
+            <h3>Undergraduate Research Assistant</h3>
+            <p class="timeline-org">Autonomic Control Lab, HCMUT &middot; Ho Chi Minh City, Vietnam</p>
+            <p class="timeline-summary">Built a 3D-SLAM mobile robot integrated with deep-learning-based human tracking.</p>
             <ul class="timeline-list">
-              <li>[Achievement with impact/metric.]</li>
-              <li>[Achievement with impact/metric.]</li>
+              <li>Designed and built a three-wheel mobile robot (SolidWorks) running RTABMAP 3D SLAM on ROS1 with RPLidar and RealSense D435i.</li>
+              <li>Implemented AMCL localization, Dijkstra path planning, and Dynamic Window obstacle avoidance; validated Hector SLAM mapping and navigation in Gazebo and RViz.</li>
+              <li>Integrated 3D SLAM with a deep-learning human-tracking model via a Wi-Fi client-server architecture.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-date">2020.06 &ndash; 2020.12</div>
+          <div class="timeline-body">
+            <h3>Embedded Software Engineer (Intern)</h3>
+            <p class="timeline-org">Robert Bosch Engineering and Business Solutions VN &middot; Ho Chi Minh City, Vietnam</p>
+            <p class="timeline-summary">Software developer on the RADAR team.</p>
+            <ul class="timeline-list">
+              <li>Researched AUTOSAR architecture in the communication application layer.</li>
+              <li>Studied the CAN protocol used in automotive embedded systems.</li>
             </ul>
           </div>
         </div>
@@ -199,52 +269,88 @@
       <h2 class="section-title">Education</h2>
 
       <div class="edu-list">
-        <!-- TODO -->
         <div class="edu-item">
-          <h3>[Degree, e.g. B.S. in Computer Science]</h3>
-          <p class="edu-org">[University], [City, Country] &middot; [YYYY] &ndash; [YYYY]</p>
-          <p class="edu-detail">[Advisor, thesis title, GPA, or honors — optional.]</p>
+          <h3>PhD Candidate in AI &amp; Robotics</h3>
+          <p class="edu-org">Sejong University, Seoul, South Korea &middot; 2022 &ndash; Present (Expected Feb 2027)</p>
+          <p class="edu-detail">
+            Advisor: Associate Professor Jae Kyu Suhr. Dissertation (ongoing): Generative Frameworks for
+            Layout-Conditioned RGB and Multi-Spectral Fire Image Synthesis to Enhance Detection and
+            Segmentation Tasks. GPA: 4.41 / 4.5.
+          </p>
+        </div>
+        <div class="edu-item">
+          <h3>B.E. in Electrical and Electronics Engineering</h3>
+          <p class="edu-org">Vietnam National University Ho Chi Minh City &ndash; HCMUT, Ho Chi Minh City, Vietnam &middot; 2017 &ndash; 2021</p>
+          <p class="edu-detail">
+            Thesis: Mobile Robot Applied 3D SLAM &amp; Deep Learning. GPA: 8.62 / 10. Member of the Honor
+            Class of Control Engineering and Automation.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PUBLICATIONS ============ -->
+  <section class="section section-alt" id="publications">
+    <div class="wrap">
+      <h2 class="section-title">Publications</h2>
+
+      <div class="pub-list">
+        <div class="pub-item">
+          <p class="pub-title">Fire Image Generation Based on Image-to-Image and Layout-to-Image Translations for Detection and Segmentation Tasks</p>
+          <p class="pub-meta">X.N. Huynh, J.K. Suhr &middot; IEEE Access &middot; 2026</p>
+        </div>
+        <div class="pub-item">
+          <p class="pub-title">Diffusion-based Fire Image Synthesis for Generating Object Detection Datasets</p>
+          <p class="pub-meta">X.N. Huynh, J.K. Suhr &middot; Proc. 2025 Summer Conference of The Institute of Electronics and Information Engineers &middot; 2025</p>
+        </div>
+        <div class="pub-item">
+          <p class="pub-title">One-Stage Small Object Detection Using Super-Resolved Feature Map for Edge Devices</p>
+          <p class="pub-meta">X.N. Huynh, G.B. Jung, J.K. Suhr &middot; MDPI Electronics &middot; 2024</p>
         </div>
       </div>
     </div>
   </section>
 
   <!-- ============ SKILLS ============ -->
-  <section class="section section-alt" id="skills">
+  <section class="section" id="skills">
     <div class="wrap">
       <h2 class="section-title">Skills</h2>
 
       <div class="skills-grid">
         <div class="skill-card">
-          <h3>[Category, e.g. Machine Learning]</h3>
-          <p>[Comma-separated list of relevant skills or tools.]</p>
+          <h3>Generative AI</h3>
+          <p>Diffusion Models (DDPM, DDIM, Latent Diffusion), GANs (CycleGAN, SPADEGAN, LostGAN), cross-spectral image translation, transformer attention, layout-conditioning.</p>
         </div>
         <div class="skill-card">
-          <h3>[Category, e.g. Programming]</h3>
-          <p>[e.g. Python, C++, JavaScript, SQL]</p>
+          <h3>Computer Vision</h3>
+          <p>Object detection, semantic segmentation, YOLO (v4, v9), knowledge distillation, multi-GPU training, CNNs, classification.</p>
         </div>
         <div class="skill-card">
-          <h3>[Category, e.g. Tools]</h3>
-          <p>[e.g. Git, Docker, PyTorch, AWS]</p>
+          <h3>Programming &amp; Frameworks</h3>
+          <p>Python (PyTorch, TorchVision, OpenCV, Pandas, NumPy, TensorFlow), C/C++.</p>
+        </div>
+        <div class="skill-card">
+          <h3>Tools</h3>
+          <p>Git, Docker, Linux, Jupyter Notebook, Hugging Face, Microsoft Azure.</p>
         </div>
         <div class="skill-card">
           <h3>Languages</h3>
-          <p>[e.g. Vietnamese (Native), English (Advanced)]</p>
+          <p>Vietnamese (Native), English (Fluent, IELTS 7.0), Korean (Basic).</p>
         </div>
       </div>
     </div>
   </section>
 
   <!-- ============ CONTACT ============ -->
-  <section class="section" id="contact">
+  <section class="section section-alt" id="contact">
     <div class="wrap contact-wrap">
       <h2 class="section-title">Let's Connect</h2>
-      <p class="contact-lede">[Open to roles / collaborations in ... — edit this line to say what you're looking for.]</p>
+      <p class="contact-lede">Open to internship and full-time opportunities in AI Research, Computer Vision, and Generative AI — feel free to reach out.</p>
       <div class="hero-actions">
         <a class="btn btn-primary" href="mailto:hxnghia99k@gmail.com">Send Email</a>
         <a class="btn btn-ghost" href="https://github.com/hxnghia99" target="_blank" rel="noopener">GitHub</a>
-        <!-- TODO: replace with your LinkedIn URL -->
-        <a class="btn btn-ghost" href="#" target="_blank" rel="noopener">LinkedIn</a>
+        <a class="btn btn-ghost" href="https://www.linkedin.com/in/x-nghia-huynh/" target="_blank" rel="noopener">LinkedIn</a>
       </div>
     </div>
   </section>

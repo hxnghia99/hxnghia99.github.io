@@ -6,23 +6,20 @@ Built with plain HTML, CSS, and JavaScript — no build step or framework requir
 
 ## Structure
 
-- `index.html` — page content and structure (hero, projects, experience, education, skills, contact)
+- `index.html` — page content and structure (hero, projects, experience, education, publications, skills, contact)
 - `styles.css` — all styling
 - `script.js` — mobile nav toggle, scroll-spy nav highlighting, project filter buttons
-- `assets/` — put your CV PDF, photo, or other static files here
+- `assets/` — CV PDF (`MyCV.pdf`), profile photo (`MyPhoto.jpg`), and any other static files
 
 ## Customizing
 
-Search `index.html` for `TODO` and `[bracketed placeholder]` text — these mark everything that
-still needs your real content: bio, location, current role, projects, work experience, education,
-skills, and links (CV, LinkedIn).
-
-To add your CV, drop a PDF into `assets/` (e.g. `assets/cv.pdf`) and point the "Curriculum Vitae"
-button in `index.html` at it.
+The site is populated with real content pulled from `assets/MyCV.pdf`. To update it, edit the
+relevant section in `index.html` directly, or replace `assets/MyCV.pdf` / `assets/MyPhoto.jpg`
+and update the links/content in `index.html` to match.
 
 To add a real project, duplicate one `<article class="project-card">` block in the Projects
-section and set `data-category` to `academic`, `industry`, or `personal` so the filter buttons
-pick it up correctly.
+section and set `data-category` to `academic` or `industry` so the filter buttons pick it up
+correctly.
 
 ## Running locally
 

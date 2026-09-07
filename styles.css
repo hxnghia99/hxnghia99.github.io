@@ -133,6 +133,32 @@ h1, h2, h3 { line-height: 1.15; margin: 0; }
   margin: 0 0 18px;
 }
 
+.hero-flex {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 48px;
+  flex-wrap: wrap;
+}
+
+.hero-text {
+  flex: 1 1 480px;
+  min-width: 0;
+}
+
+.hero-photo {
+  flex: 0 0 auto;
+}
+
+.hero-photo img {
+  width: 200px;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 4px solid var(--bg-panel);
+  box-shadow: var(--shadow);
+}
+
 .hero h1 {
   font-size: clamp(2rem, 4.5vw, 3.2rem);
   font-weight: 800;
@@ -439,6 +465,34 @@ h1, h2, h3 { line-height: 1.15; margin: 0; }
   font-size: 0.9rem;
 }
 
+/* ---------- Publications ---------- */
+.pub-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.pub-item {
+  background: var(--bg-panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 18px 22px;
+  box-shadow: var(--shadow);
+}
+
+.pub-title {
+  margin: 0 0 6px;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.pub-meta {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--muted);
+  font-weight: 600;
+}
+
 /* ---------- Skills ---------- */
 .skills-grid {
   display: grid;
@@ -504,6 +558,10 @@ h1, h2, h3 { line-height: 1.15; margin: 0; }
 }
 
 @media (max-width: 720px) {
+  .hero-flex { flex-direction: column-reverse; align-items: center; text-align: center; }
+  .hero-lede { margin-left: auto; margin-right: auto; }
+  .hero-actions { justify-content: center; }
+
   .main-nav {
     position: absolute;
     top: 64px;
