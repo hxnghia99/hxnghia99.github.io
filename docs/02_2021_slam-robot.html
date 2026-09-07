@@ -27,33 +27,168 @@
       <div class="doc-section">
         <h2>Architecture</h2>
         <p>
-          A three-wheel mobile robot (designed in SolidWorks) running ROS1 on Ubuntu, using RTABMAP
-          for 3D SLAM with an RPLidar and RealSense D435i camera. Localization via AMCL, path
-          planning via Dijkstra's algorithm, and obstacle avoidance via the Dynamic Window approach.
+          A three-wheel mobile robot running ROS1 on an NVIDIA Jetson Nano, built around four
+          subsystems &mdash; mapping (RTAB-Map), localization (AMCL), navigation (Dijkstra global
+          planning + Dynamic Window local planning), and human following (MobileNet-SSD detection
+          with color-feature re-identification) &mdash; all fed by a 2D lidar, an RGB-D camera, and
+          wheel/IMU odometry, and issuing velocity commands to the motor controller over rosserial.
         </p>
+
+        <figure class="doc-figure">
+          <img src="../assets/figures/slam-robot-system-overview.png" alt="System overview: Lidar and Camera feed RTAB-Map, AMCL localization, the navigation stack, and human tracking inside ROS, which communicates over rosserial with a Mobile Control board handling odometry, velocity control, and IMU">
+          <figcaption>System overview: sensors feed the ROS stack (mapping, localization, navigation, human tracking), which talks to the motor-control board over rosserial.</figcaption>
+        </figure>
+
+        <figure class="doc-figure">
+          <img src="../assets/figures/slam-robot-hardware.png" alt="Hardware diagram: a Jetson Nano running ROS reads a lidar and camera and connects over rosserial to an STM32F407VG Discovery board, which drives two DC motors with encoders through H-bridge drivers and reads an IMU, powered from a 12V battery through buck converters">
+          <figcaption>Hardware: Jetson Nano (ROS, RPLIDAR A1, RealSense D435i, Wi-Fi link to a desktop) &harr; rosserial &harr; STM32F407VG (PID motor control, HI-216 H-bridges, DCM50-775 motors with encoders, MPU9250 IMU).</figcaption>
+        </figure>
+
         <p>
-          A Wi-Fi client-server link integrates a deep-learning-based human-tracking model with the
-          SLAM stack for combined detection and tracking.
+          <strong>Odometry</strong> is fused from two sources: the STM32 combines encoder counts with
+          orientation from a Madgwick filter (IMU gyroscope + accelerometer + ellipsoid-calibrated
+          magnetometer) running in the earth frame, while the Jetson Nano independently estimates
+          motion from lidar scan-matching.
+        </p>
+
+        <figure class="doc-figure">
+          <img src="../assets/figures/slam-robot-rtabmap.png" alt="RTAB-Map pipeline: sensors and odometry feed memory management, loop closure, graph optimization, and global map assembling to produce a 2D grid map and a 3D point cloud, implemented as a ROS package">
+          <figcaption>Mapping: RTAB-Map's memory management &rarr; loop closure &rarr; graph optimization &rarr; global map assembling, producing a 2D grid map and 3D point cloud.</figcaption>
+        </figure>
+
+        <figure class="doc-figure">
+          <img src="../assets/figures/slam-robot-navigation-stack.png" alt="Navigation stack: sensors and the map feed a global planner using Dijkstra's algorithm over a global costmap, and a local planner using the Dynamic Window Algorithm over a local costmap, producing a command velocity">
+          <figcaption>Navigation: Dijkstra global planning over the global costmap, Dynamic Window local planning over the local costmap.</figcaption>
+        </figure>
+
+        <p>
+          <strong>Human following</strong> runs as a state machine: MobileNet-SSD detects people each
+          frame; a new detection is matched to the tracked target by IOU, or &mdash; if the target
+          left the frame &mdash; by comparing K-means (k=3) color-cluster features via Euclidean
+          distance against a threshold; a CSRT visual tracker bridges up to 5 frames when detection
+          momentarily fails, before the robot rotates and drives to keep the target at a fixed
+          distance.
+        </p>
+
+        <figure class="doc-figure">
+          <img src="../assets/figures/slam-robot-human-following-flow.png" alt="Human following state machine: person detection via MobileNet-SSD, IOU matching, feature extraction and comparison via K-means color clustering and Euclidean distance, CSRT tracking fallback for 5 frames, then track box update and robot approach commands">
+          <figcaption>Human-following state machine, including the CSRT fallback path used when detection briefly fails.</figcaption>
+        </figure>
+
+        <p>
+          Full implementation: <a href="https://github.com/hxnghia99/thesis_robot" target="_blank" rel="noopener">github.com/hxnghia99/thesis_robot</a>
         </p>
       </div>
 
       <div class="doc-section">
         <h2>Demo</h2>
-        <p>[Add a video of the robot mapping and navigating here.]</p>
+        <p>
+          From SolidWorks design to URDF simulation model to the physical build:
+        </p>
+        <figure class="doc-figure">
+          <img src="../assets/figures/slam-robot-physical-build.png" alt="SolidWorks CAD model, URDF simulation model, and the real physical three-wheel robot with lidar, camera, and electronics mounted on three layers, next to a table comparing designed vs. real height, diameter, weight, and layer count">
+          <figcaption>SolidWorks &rarr; URDF &rarr; real robot. The built robot came in heavier (4 kg vs. 0.6 kg designed) and slightly larger than the CAD model.</figcaption>
+        </figure>
+        <p>
+          Mapping a real room: reference photos, the resulting 2D floor plan and occupancy grid, and
+          the 3D point-cloud reconstruction:
+        </p>
+        <figure class="doc-figure">
+          <img src="../assets/figures/slam-robot-mapping-demo.png" alt="Room photos alongside the generated 2D floor plan with room and door dimensions, the 2D occupancy grid map, and two views of the 3D point-cloud reconstruction">
+          <figcaption>Real room (left) vs. generated 2D map with dimensions and 3D point-cloud reconstruction (right).</figcaption>
+        </figure>
+        <p>
+          The human-following tracker maintaining identity across frames using color features (values
+          shown are the Euclidean distance to the reference, compared against the threshold):
+        </p>
+        <figure class="doc-figure">
+          <img src="../assets/figures/slam-robot-human-following-demo.png" alt="Reference target person frame, and two new frames where the tracker re-identifies the same target using color features, with a shown feature distance of 63.507 under the 70 threshold">
+          <figcaption>Reference frame vs. new frames re-identified via color-feature distance (e.g. 63.507, under the threshold of 70).</figcaption>
+        </figure>
       </div>
 
       <div class="doc-section">
         <h2>Performance</h2>
         <p>
-          Validated 2D Hector SLAM mapping and navigation in Gazebo/RViz simulation before
-          deployment on the physical robot, demonstrating practical feasibility of the full
-          localization&ndash;navigation&ndash;tracking pipeline.
+          Measured on the physical robot in a real indoor room (RMS = root-mean-square error against
+          ground truth):
+        </p>
+
+        <div class="doc-table-wrap">
+          <table class="doc-table">
+            <caption>Localization &amp; navigation accuracy (AMCL / move_base)</caption>
+            <thead><tr><th>Task</th><th>RMS error x (m)</th><th>RMS error y (m)</th><th>RMS error yaw</th></tr></thead>
+            <tbody>
+              <tr><td>Localization (AMCL)</td><td>0.0599</td><td>0.0177</td><td>9.16&deg; (0.1598 rad)</td></tr>
+              <tr><td>Navigation (move to goal)</td><td>0.0346</td><td>0.0355</td><td>7.86&deg; (0.1372 rad)</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="doc-table-wrap">
+          <table class="doc-table">
+            <caption>Mapping accuracy (RTAB-Map, vs. measured room dimensions)</caption>
+            <thead><tr><th>Dimension</th><th>Error</th></tr></thead>
+            <tbody>
+              <tr><td>Room length</td><td>1.13%</td></tr>
+              <tr><td>Room width</td><td>0.70%</td></tr>
+              <tr><td>Door width</td><td>5.17%</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="doc-table-wrap">
+          <table class="doc-table">
+            <caption>Human-following tracker (60 labeled samples; 1,600-frame / 4-minute continuity run)</caption>
+            <thead><tr><th>Precision</th><th>Recall</th><th>F1-score</th><th>Frame rate</th><th>Max. continuous lost time</th></tr></thead>
+            <tbody>
+              <tr><td>75.0%</td><td>81.08%</td><td>77.92%</td><td>&asymp;7 FPS</td><td>&asymp;10 s (&asymp;65 frames)</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="doc-table-wrap">
+          <table class="doc-table">
+            <caption>Velocity PID control (differential drive)</caption>
+            <thead><tr><th>Rise time</th><th>Settling time</th><th>Steady-state error</th><th>Overshoot</th><th>PWM freq.</th><th>Gains (Kp, Ki, Kd)</th></tr></thead>
+            <tbody>
+              <tr><td>1 s</td><td>1.5 s</td><td>0</td><td>0</td><td>10 kHz</td><td>4.5, 9, 0.15</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <p>
+          Honest limitations observed: the human-tracker's color features struggle when the target
+          wears similar colors to the background or other people; end-to-end latency (hardware
+          headroom on the Jetson Nano and un-optimized Python code) capped tracking at &asymp;7 FPS;
+          and localization/mapping accuracy was ultimately limited by lidar and IMU noise.
         </p>
       </div>
 
       <div class="doc-section">
         <h2>Evidence</h2>
-        <p>[Add generated maps, navigation logs, or the thesis document.]</p>
+        <p>Sensor and ROS node I/O rates, as measured on the running system:</p>
+        <div class="doc-table-wrap">
+          <table class="doc-table">
+            <caption>Node &amp; topic rates</caption>
+            <thead><tr><th>Topic / node</th><th>Rate</th></tr></thead>
+            <tbody>
+              <tr><td>Lidar scan (RPLIDAR A1, 0.15&ndash;3.5 m, 0.5&deg; resolution)</td><td>7 Hz</td></tr>
+              <tr><td>Camera (color + depth, RealSense D435i)</td><td>15 Hz</td></tr>
+              <tr><td>Odometry / TF (from STM32)</td><td>10 Hz</td></tr>
+              <tr><td>RTAB-Map 2D / 3D map output</td><td>4 Hz</td></tr>
+              <tr><td>AMCL pose / particle cloud</td><td>7 Hz</td></tr>
+              <tr><td>Navigation command velocity</td><td>5 Hz</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>
+          Full source and the graduation thesis (&ldquo;Application of SLAM Algorithm and Computer
+          Vision for Autonomous Indoor Robot&rdquo;) code are in the repository:
+        </p>
+        <ul class="doc-list">
+          <li><a href="https://github.com/hxnghia99/thesis_robot" target="_blank" rel="noopener">hxnghia99/thesis_robot</a></li>
+        </ul>
       </div>
     </div>
   </section>
@@ -61,7 +196,7 @@
 
 <footer class="site-footer">
   <div class="wrap">
-    <p>&copy; Xuan-Nghia Huynh · Project · Updated September 2021.</p>
+    <p>&copy; Xuan-Nghia Huynh &middot; Project &middot; Updated September 2021.</p>
   </div>
 </footer>
 
