@@ -27,30 +27,167 @@
       <div class="doc-section">
         <h2>Architecture</h2>
         <p>
-          An end-to-end layout-conditioned GAN combining Image-to-Image and Layout-to-Image
-          translation branches, generating photorealistic fire images from semantic layout maps
-          while jointly producing pixel-aligned segmentation masks — removing the need for manual
-          annotation.
+          Real fire data is unsafe to collect at scale, so this project generates it instead:
+          photorealistic fire/smoke images composited into arbitrary background scenes at
+          user-specified locations, with a pixel-aligned segmentation mask produced automatically
+          &mdash; no manual annotation.
+        </p>
+
+        <figure class="doc-figure">
+          <img src="../assets/figures/gan-fire-overview.png" alt="High-level overview: a background image and a layout with fire/smoke boxes are passed through a combined I2I and L2I translation generator to produce a fire image and its segmentation mask, then judged by discriminators D_F and D_B">
+          <figcaption>
+            Overview: a background image (a) and a layout of fire/smoke boxes (b) are combined by
+            the generator G to produce a fire image (d) and its segmentation mask (e), which
+            discriminators D<sub>F</sub> and D<sub>B</sub> judge as real or fake during training.
+          </figcaption>
+        </figure>
+
+        <p>
+          The design combines two translation mechanisms rather than relying on either alone:
+        </p>
+        <ul class="doc-list">
+          <li><strong>Image-to-Image (I2I) translation</strong> via a U-Net, which preserves the real background scene.</li>
+          <li><strong>Layout-to-Image (L2I) translation</strong> via ISLA-norm (instance-sensitive, layout-aware normalization), which places fire/smoke exactly where the input boxes specify.</li>
+        </ul>
+
+        <figure class="doc-figure">
+          <img src="../assets/figures/gan-fire-i2i-l2i-comparison.png" alt="Comparison showing CycleGAN (I2I only) hallucinates fire without spatial control, LostGANv2 (L2I only) places fire correctly but loses the real background, and the proposed I2I+L2I method keeps the real background, places fire correctly, and outputs a mask">
+          <figcaption>
+            Why combine both: I2I-only (CycleGAN) has no spatial control over fire placement; L2I-only
+            (LostGANv2) controls placement but discards the real background. Combining both keeps the
+            real background, places fire where specified, and yields a mask.
+          </figcaption>
+        </figure>
+
+        <p>
+          Each ResBlock in the generator carries two parallel paths &mdash; a plain path for the I2I
+          branch and an ISLA-norm-conditioned path for the L2I branch &mdash; fused by a learnable
+          weighted sum at every resolution, then decoded to an RGB image (via ToRGB) and a mask (via
+          Argmax over per-class soft masks):
+        </p>
+
+        <figure class="doc-figure">
+          <img src="../assets/figures/gan-fire-generator-network.png" alt="Detailed generator network: encoder ResBlocks feed a decoder where each stage fuses a plain I2I ResBlock output with an ISLA-norm L2I ResBlock output via a learnable weighted sum, conditioned on soft masks per class, ending in ToRGB and Argmax outputs">
+          <figcaption>Generator network: encoder/decoder ResBlocks with per-stage I2I/L2I fusion via learnable weighted sums, conditioned on class soft-masks derived from the input layout.</figcaption>
+        </figure>
+
+        <figure class="doc-figure">
+          <img src="../assets/figures/gan-fire-generator-blocks.png" alt="Building blocks: the encoder ResBlock (downsampling), the ISLA-norm-conditioned decoder ResBlock (upsampling), and the ToRGB module (BatchNorm, ReLU, 3x3 Conv, Tanh)">
+          <figcaption>Building blocks used above: encoder ResBlock, the ISLA-norm decoder ResBlock, and the ToRGB output head.</figcaption>
+        </figure>
+
+        <p>
+          Two discriminators keep the generator honest: D<sub>F</sub> scores whole-image and
+          per-object realism (via an image classifier and an RoIAlign-based object classifier), while
+          D<sub>B</sub> checks that the non-fire background regions stay reconstructed faithfully
+          (L1 + adversarial loss).
+        </p>
+
+        <p>
+          Full implementation: <a href="https://github.com/hxnghia99/LostGAN_Research" target="_blank" rel="noopener">github.com/hxnghia99/LostGAN_Research</a>
         </p>
       </div>
 
       <div class="doc-section">
         <h2>Demo</h2>
-        <p>[Add sample generated images and mask overlays here.]</p>
+        <p>
+          Qualitative comparison against prior layout-conditioned generators on the same input
+          layouts and backgrounds:
+        </p>
+        <figure class="doc-figure">
+          <img src="../assets/figures/gan-fire-demo-methods.png" alt="Qualitative comparison of the proposed method against RDAGAN, LostGANv2, and LayoutDiffusion across four background scenes">
+          <figcaption>The proposed method vs. RDAGAN, LostGANv2, and LayoutDiffusion on the same four background scenes and fire/smoke layouts.</figcaption>
+        </figure>
+        <p>
+          Generated fire images paired with their automatically-produced segmentation masks, across
+          varied scenes and fire shapes:
+        </p>
+        <figure class="doc-figure">
+          <img src="../assets/figures/gan-fire-demo-image-mask-pairs.png" alt="Generated fire images alongside their automatically produced segmentation masks across multiple diverse background scenes">
+          <figcaption>Generated fire images (left of each pair) with their matching auto-generated segmentation masks (right).</figcaption>
+        </figure>
       </div>
 
       <div class="doc-section">
         <h2>Performance</h2>
         <p>
-          Lowered FID by 4.79 versus the PaintByExample diffusion baseline. Synthesized data
-          improved a YOLOv9 detector by +4.6% mAP and a customized U-Net segmentation model by
-          +4.44% mIoU on a self-built fire dataset.
+          The proposed method reaches <strong>68.73 FID</strong>, ahead of RDAGAN, LostGANv2, and
+          PaintByExample, and close behind LayoutDiffusion (64.89) &mdash; at a fraction of its
+          inference cost. Training-data augmentation with the generated images improves both
+          downstream detection and segmentation over every baseline.
         </p>
+
+        <div class="doc-table-wrap">
+          <table class="doc-table">
+            <caption>Generation quality (FID, lower is better)</caption>
+            <thead><tr><th>Method</th><th>FID</th></tr></thead>
+            <tbody>
+              <tr><td>RDAGAN</td><td>95.24</td></tr>
+              <tr><td>LostGANv2</td><td>75.15</td></tr>
+              <tr><td>PaintByExample</td><td>73.52</td></tr>
+              <tr><td>LayoutDiffusion</td><td>64.89</td></tr>
+              <tr class="doc-table-highlight"><td>Proposed method</td><td>68.73</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="doc-table-wrap">
+          <table class="doc-table">
+            <caption>Fire/smoke detection with synthetic data augmentation (YOLO-based detector)</caption>
+            <thead><tr><th>Augmentation</th><th>Training set</th><th>mAP</th><th>AP (fire)</th><th>AP (smoke)</th></tr></thead>
+            <tbody>
+              <tr><td>None</td><td>vanilla set</td><td>58.8</td><td>67.9</td><td>49.7</td></tr>
+              <tr><td>None</td><td>vanilla + 3,040 non-fire</td><td>59.4</td><td>68.9</td><td>49.8</td></tr>
+              <tr><td>RDAGAN</td><td>vanilla + 4,000 synthetic</td><td>60.2</td><td>70.1</td><td>50.3</td></tr>
+              <tr><td>LostGANv2</td><td>vanilla + 4,000 synthetic</td><td>61.2</td><td>71.1</td><td>51.3</td></tr>
+              <tr><td>LayoutDiffusion</td><td>vanilla + 4,000 synthetic</td><td>62.2</td><td>72.5</td><td>51.9</td></tr>
+              <tr class="doc-table-highlight"><td>Proposed method</td><td>vanilla + 4,000 synthetic</td><td>63.4</td><td>73.5</td><td>53.2</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="doc-table-wrap">
+          <table class="doc-table">
+            <caption>Fire segmentation with synthetic data augmentation (U-Net)</caption>
+            <thead><tr><th>Augmentation</th><th>Training set</th><th>mIoU</th><th>Dice</th></tr></thead>
+            <tbody>
+              <tr><td>None</td><td>vanilla set</td><td>75.68</td><td>85.02</td></tr>
+              <tr><td>None</td><td>vanilla + 1,000 non-fire</td><td>75.87</td><td>85.29</td></tr>
+              <tr><td>LostGANv2</td><td>vanilla + 1,000 synthetic</td><td>77.91</td><td>86.61</td></tr>
+              <tr class="doc-table-highlight"><td>Proposed method</td><td>vanilla + 1,000 synthetic</td><td>80.12</td><td>88.39</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="doc-table-wrap">
+          <table class="doc-table">
+            <caption>Compute cost</caption>
+            <thead><tr><th>Method</th><th>Training Time (h)</th><th>Inference (ms)</th><th>GFLOPs</th><th>GPU</th></tr></thead>
+            <tbody>
+              <tr><td>RDAGAN</td><td>6.6</td><td>17.6</td><td>2.3</td><td>RTX 3090</td></tr>
+              <tr><td>LostGANv2</td><td>36.2</td><td>21.2</td><td>13.2</td><td>RTX 3090</td></tr>
+              <tr><td>LayoutDiffusion</td><td>66.4</td><td>4368.7</td><td>10.2 &times; 50</td><td>A100</td></tr>
+              <tr><td>PaintByExample</td><td>19.8</td><td>3174.2</td><td>22.4 &times; 50</td><td>A100</td></tr>
+              <tr class="doc-table-highlight"><td>Proposed method</td><td>22.1</td><td>21.3</td><td>29.7</td><td>RTX 3090</td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <div class="doc-section">
         <h2>Evidence</h2>
-        <p>[Add qualitative examples, ablation tables, or a link to the manuscript.]</p>
+        <p>
+          Code, model definitions, and training/testing/FID scripts are in the project repository:
+        </p>
+        <ul class="doc-list">
+          <li><a href="https://github.com/hxnghia99/LostGAN_Research" target="_blank" rel="noopener">hxnghia99/LostGAN_Research</a> &mdash; full repository (<code>model/</code>, <code>data/</code>, <code>utils/</code>, <code>train.py</code>, <code>test.py</code>, <code>fid_compute.py</code>)</li>
+          <li>Requires Python 3.9, PyTorch 1.13.1, CUDA 11.6.3, cuDNN 8.4.1</li>
+        </ul>
+        <p>
+          Published as: X.N. Huynh and J.K. Suhr, &ldquo;Fire Image Generation Based on Image-to-Image
+          and Layout-to-Image Translations for Detection and Segmentation Tasks,&rdquo;
+          <em>IEEE Access</em>, 2026.
+        </p>
       </div>
     </div>
   </section>
