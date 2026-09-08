@@ -518,6 +518,14 @@ h1, h2, h3 { line-height: 1.15; margin: 0; }
   font-weight: 700;
 }
 
+.pub-title a {
+  color: var(--accent-strong);
+}
+
+.pub-title a:hover {
+  text-decoration: underline;
+}
+
 .pub-meta {
   margin: 0;
   font-size: 0.85rem;
